@@ -1,9 +1,12 @@
 package employe.management.system;
 import java.awt.*;
 import javax.swing.*;
+import java.awt.event.*;
+import java.sql.*;
 
-
-public class Login extends JFrame {
+public class Login extends JFrame implements ActionListener {
+    
+    JTextField tusername, tpassword;
     
     Login() {
         getContentPane().setBackground(Color.WHITE);
@@ -13,7 +16,7 @@ public class Login extends JFrame {
         username.setBounds(40, 40, 75, 30);
         add(username);
         
-        JTextField tusername = new JTextField();
+        tusername = new JTextField();
         tusername.setBounds(150, 40, 150, 30);
         add(tusername);
         
@@ -21,7 +24,7 @@ public class Login extends JFrame {
         password.setBounds(40, 80, 75, 30);
         add(password);
         
-        JTextField tpassword = new JTextField();
+        tpassword = new JTextField();
         tpassword.setBounds(150, 80, 150, 30);
         add(tpassword);
         
@@ -29,6 +32,7 @@ public class Login extends JFrame {
         login.setBounds(150, 130, 150, 30);
         login.setBackground(Color.black);
         login.setForeground(Color.white);
+        login.addActionListener(this);
         add(login);
         
         ImageIcon i1 = new ImageIcon(ClassLoader.getSystemResource("icons/second.jpg"));
@@ -43,8 +47,26 @@ public class Login extends JFrame {
         setLocation(400, 200);
         setVisible(true);
     }
+    public void actionPerformed(ActionEvent ae){
+        try {
+            String username = tusername.getText();
+            String password = tpassword.getText();
+            
+            Conn c =  new Conn();
+            String query = "select * from login where username = '"+username+"'and password = '"+password+"'";
+            ResultSet rs = c.s.executeQuery(query);
+            
+            if(rs.next()){
+                setVisible(false);
+            } else {
+                JOptionPane.showMessageDialog(null, "Invalid Username or Password");
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        } 
+    }
     
-   public static void main(String[] args){
-       new Login();
-   } 
+    public static void main(String[] args){
+        new Login();
+    } 
 }
