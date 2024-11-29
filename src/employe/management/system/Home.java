@@ -47,9 +47,11 @@ public class Home extends JFrame implements ActionListener{
         setLocation(150, 80);
         setVisible(true);
     }
+    
     public void actionPerformed(ActionEvent ae){
         if(ae.getSource() == add){
-            
+            setVisible(false);
+            new AddEmployee();
         } else if(ae.getSource() == edit) {
         
         } else if(ae.getSource() == update) {
