@@ -5,7 +5,7 @@ import java.awt.event.*;
 
 public class Home extends JFrame implements ActionListener{
     
-    JButton add, edit, update, remove;
+    JButton add, view, update, remove;
     
     Home() {
         setLayout(null);
@@ -28,10 +28,10 @@ public class Home extends JFrame implements ActionListener{
         add.addActionListener(this);
         image.add(add);
         
-        edit = new JButton("Edit Employee");
-        edit.setBounds(750, 100, 150, 40);
-        edit.addActionListener(this);
-        image.add(edit);
+        view = new JButton("View Employee");
+        view.setBounds(750, 100, 150, 40);
+        view.addActionListener(this);
+        image.add(view);
         
         update = new JButton("Update Employee");
         update.setBounds(580, 150, 150, 40);
@@ -52,12 +52,15 @@ public class Home extends JFrame implements ActionListener{
         if(ae.getSource() == add){
             setVisible(false);
             new AddEmployee();
-        } else if(ae.getSource() == edit) {
-        
+        } else if(ae.getSource() == view) {
+            setVisible(false);
+            new ViewEmployee();
         } else if(ae.getSource() == update) {
-        
+            setVisible(false);
+            new ViewEmployee();
         } else {
-        
+            setVisible(false);
+            new RemoveEmployee();
         }
     }
     

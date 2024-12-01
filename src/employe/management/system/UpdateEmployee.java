@@ -1,25 +1,22 @@
 package employe.management.system;
 import javax.swing.*;
 import java.awt.*;
-import com.toedter.calendar.JDateChooser;
 import java.awt.event.*;
-import java.util.*;
+import java.sql.*;
 
-public class AddEmployee extends JFrame implements ActionListener{
+public class UpdateEmployee extends JFrame implements ActionListener{
  
-    JTextField tusername, tfname, tsalary, taddress, tphone, temail, tdesignation, tnid;
-    JButton addemployee, back;
-    JComboBox teducation;
-    JDateChooser tdob;
+    JTextField tusername, tfname, tsalary, taddress, tphone, temail, tdesignation, tnid, tdob, teducation;
+    JButton updateemployee, back;
     JLabel employeeid;
-    Random ran = new Random();
-    int number = ran.nextInt(999999);
+    String empId;
     
-    AddEmployee() {
+    UpdateEmployee(String empid) {
+        this.empId = empid;
         getContentPane().setBackground(Color.WHITE);
         setLayout(null);
         
-        JLabel heading = new JLabel("ADD EMPLOYEE");
+        JLabel heading = new JLabel("UPDATE EMPLOYEE");
         heading.setBounds(320, 30, 1200, 60);
         heading.setFont(new Font("san_serif", Font.PLAIN, 30));
         add(heading);
@@ -51,7 +48,7 @@ public class AddEmployee extends JFrame implements ActionListener{
         labeldob.setFont(new Font("san_serif", Font.PLAIN, 20));
         add(labeldob);
         
-        tdob = new JDateChooser();
+        tdob = new JTextField();
         tdob.setBounds(200, 200, 150, 30);
         add(tdob);
         
@@ -94,13 +91,12 @@ public class AddEmployee extends JFrame implements ActionListener{
         temail.setBounds(200, 300, 150, 30);
         add(temail);
         
-        JLabel labelhedu = new JLabel("Higher Education: ");
+        JLabel labelhedu = new JLabel("Education: ");
         labelhedu.setBounds(400, 300, 150, 30);
         labelhedu.setFont(new Font("san_serif", Font.PLAIN, 20));
         add(labelhedu);
         
-        String courses[] = {"SSC", "HSC", "DIPLOMA", "BBA", "MBA", "BSC", "MSC", "PHD"};
-        teducation = new JComboBox(courses);
+        teducation = new JTextField();
         teducation.setBackground(Color.WHITE);
         teducation.setBounds(600, 300, 150, 30);
         add(teducation);
@@ -131,18 +127,40 @@ public class AddEmployee extends JFrame implements ActionListener{
         lableid.setFont(new Font("san_serif", Font.PLAIN, 20));
         add(lableid);
         
-        employeeid = new JLabel("" + number);
+        employeeid = new JLabel();
         employeeid.setBounds(200, 400, 150, 30);
         employeeid.setFont(new Font("san_serif", Font.PLAIN, 20));
         add(employeeid);
         
+        try {
+            Conn c = new Conn();
+            String query = "select * from employee where employeeid = '"+empId+"'";
+            ResultSet rs = c.s.executeQuery(query);
+            while(rs.next()) {
+                tusername.setText(rs.getString("name"));
+                tfname.setText(rs.getString("fname"));
+                tdob.setText(rs.getString("dob"));
+                taddress.setText(rs.getString("address"));
+                tsalary.setText(rs.getString("salary"));
+                tphone.setText(rs.getString("phone"));
+                temail.setText(rs.getString("email"));
+                teducation.setText(rs.getString("education"));
+                tnid.setText(rs.getString("nid"));
+                employeeid.setText(rs.getString("employeeid"));
+                tdesignation.setText(rs.getString("designation"));
+                
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
         //button row
-        addemployee = new JButton("Add Employee");
-        addemployee.setBounds(250, 450, 150, 30);
-        addemployee.setBackground(Color.black);
-        addemployee.setForeground(Color.white);
-        addemployee.addActionListener(this);
-        add(addemployee);
+        updateemployee = new JButton("Update Employee");
+        updateemployee.setBounds(250, 450, 150, 30);
+        updateemployee.setBackground(Color.black);
+        updateemployee.setForeground(Color.white);
+        updateemployee.addActionListener(this);
+        add(updateemployee);
         
         //button row
         back = new JButton("Back");
@@ -159,7 +177,7 @@ public class AddEmployee extends JFrame implements ActionListener{
     }
     
     public void actionPerformed(ActionEvent ae){
-        if(ae.getSource() == addemployee){
+        if(ae.getSource() == updateemployee){
             String name = tusername.getText();
             String fname = tfname.getText();
             String salary = tsalary.getText();
@@ -167,19 +185,18 @@ public class AddEmployee extends JFrame implements ActionListener{
             String phone = tphone.getText();
             String email = temail.getText();
             String designation = tdesignation.getText();
-            String dob = ((JTextField) tdob.getDateEditor().getUiComponent()).getText();
-            String education = (String) teducation.getSelectedItem();
-            String empid = employeeid.getText();       
+            String dob = tdob.getText();
+            String education = teducation.getText();     
             String nid = tnid.getText();
 
             
             try {
                 Conn conn = new Conn();
-                String query = "insert into employee values('"+name+"', '"+empid+"', '"+fname+"', '"+dob+"', '"+salary+"', '"+address+"', '"+phone+"', '"+email+"', '"+education+"', '"+designation+"', '"+nid+"')";
+                String query = "update employee set name = '"+name+"', fname = '"+fname+"', salary = '"+salary+"', address = '"+address+"', phone = '"+phone+"', email =  '"+email+"', education = '"+education+"', designation = '"+designation+"', dob = '"+dob+"', nid = '"+nid+"' where employeeid = '"+empId+"'";
                 conn.s.executeUpdate(query);
-                JOptionPane.showMessageDialog(null, "Employee details added successfully");
+                JOptionPane.showMessageDialog(null, "Employee details updated successfully");
                 setVisible(false);
-                new Home();
+                new ViewEmployee();
             }catch (Exception e) {
                 e.printStackTrace();
             }
@@ -192,6 +209,6 @@ public class AddEmployee extends JFrame implements ActionListener{
     
     public static void main(String[] args)
     {
-        new AddEmployee();
+        new UpdateEmployee("");
     }
 }
